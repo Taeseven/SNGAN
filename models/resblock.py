@@ -4,8 +4,8 @@ import torch.nn.functional as F
 from layers import Conv2d, CategoricalConditionalBatchNorm2d 
 
 def _upsample(x):
-    h, w = x.size()[2:]
-    return F.interpolate(x, size=(h * 2, w * 2), mode='bilinear')
+    upsample = torch.nn.UpsamplingBilinear2d(scale_factor=2)
+    return upsample(x)
 
 def _downsample(x):
     return F.avg_pool2d(x, 2)
@@ -14,7 +14,6 @@ class ResBlock_G(torch.nn.Module):
     def __init__(self, in_channels, out_channels, hidden_channels=None, k_size=3, pad=1,
                 activation=F.relu, upsample=False, num_classes=0):
         super(ResBlock_G, self).__init__()
-
         self.activation = activation
         self.upsample = upsample
         self.learnable_sc = in_channels != out_channels or upsample
