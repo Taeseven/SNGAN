@@ -225,10 +225,10 @@ def main():
                 fake_data = aG(noise, fake_labels)
                 gen_source, gen_class = aD(fake_data, fake_labels)
 
-                gen_class = loss_c(gen_class, fake_labels)
+                # gen_class = loss_c(gen_class, fake_labels)
                 gen_source = loss_g(gen_source)
 
-                gen_cost = gen_class + gen_source
+                gen_cost = gen_class #+ gen_source
                 gen_cost.backward()
 
                 if((batch_idx%150)==0):
@@ -263,10 +263,10 @@ def main():
             disc_fake_source, disc_fake_class = aD(fake_data, fake_label)
             
             disc_fake_source, disc_real_source = loss_d(disc_fake_source, disc_real_source)
-            disc_real_class = loss_c(disc_real_class, real_class)
-            disc_fake_class = loss_c(disc_fake_class, fake_label)
+            # disc_real_class = loss_c(disc_real_class, real_class)
+            # disc_fake_class = loss_c(disc_fake_class, fake_label)
 
-            disc_cost = disc_fake_class + disc_real_class + disc_fake_source + disc_real_source
+            disc_cost =  disc_fake_source + disc_real_source #+ disc_fake_class + disc_real_class
 
             if opt.model == 'wgan-gp':
                 gradient_penalty = calc_gradient_penalty(aD, x_adv,fake_data, opt.batch_size)
@@ -284,8 +284,10 @@ def main():
 
             loss1.append(disc_fake_source.item())
             loss2.append(disc_real_source.item())
-            loss3.append(disc_real_class.item())
-            loss4.append(disc_fake_class.item())
+            # loss3.append(disc_real_class.item())
+            # loss4.append(disc_fake_class.item())
+            loss3.append(0)
+            loss4.append(0)
             acc1.append(accuracy)
 
             if((batch_idx%50)==0):
